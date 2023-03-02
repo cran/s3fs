@@ -1,3 +1,9 @@
+# s3fs 0.1.3
+
+* Fix hard coded max batch size
+* Add seed for future to prevent warning message
+* Ensure nested directories are removed from class cache
+
 # s3fs 0.1.2
 
 * Hot fix replace `\()` syntax with `function()`

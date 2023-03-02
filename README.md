@@ -10,6 +10,8 @@ badge](https://dyfanjones.r-universe.dev/badges/s3fs)](https://dyfanjones.r-univ
 [![R-CMD-check](https://github.com/DyfanJones/s3fs/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DyfanJones/s3fs/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/DyfanJones/s3fs/branch/main/graph/badge.svg)](https://app.codecov.io/gh/DyfanJones/s3fs?branch=main)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/s3fs)](https://CRAN.R-project.org/package=s3fs)
 <!-- badges: end -->
 
 `s3fs` provides a file-system like interface into Amazon Web Services
@@ -20,6 +22,13 @@ however it’s API and implementation has been developed to follow `R`’s
 [`fs`](https://github.com/r-lib/fs).
 
 ## Installation
+
+You can install the released version of s3fs from
+[CRAN](https://cran.r-project.org/) with:
+
+``` r
+install.packages('s3fs')
+```
 
 r-universe installation:
 
