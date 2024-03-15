@@ -396,7 +396,7 @@ S3FileSystem = R6Class("S3FileSystem",
       dir.create(unique(dirname(new_path)), showWarnings = F, recursive = T)
       new_path = path_abs(new_path)
 
-      if (length(new_path) == 1 & fs::is_dir(new_path)) {
+      if (length(new_path) == 1 && all(fs::is_dir(new_path))) {
         new_path = rep(new_path, length(path))
         new_path = paste(trimws(new_path, "right", "/"), basename(path), sep = "/")
         dir.create(unique(dirname(new_path)), showWarnings = F, recursive = T)
@@ -524,12 +524,12 @@ S3FileSystem = R6Class("S3FileSystem",
           )
           resp$size = resp$ContentLength
           resp$ContentLength = NULL
-          resp$type = ifelse(endsWith(s3_parts[[i]]$Key, "/"), "directory", "file")
-          suppressWarnings(as.data.table(resp))
+          resp$type = if (endsWith(s3_parts[[i]]$Key, "/")) "directory" else "file"
+          resp[lengths(resp) == 0] = lapply(resp[lengths(resp) == 0], as.na)
+          as.data.table(resp)
         },
         future.seed = length(s3_parts)
       )
-
       dt = rbindlist(resp)
       names(dt) = camel_to_snake(names(dt))
       setnames(dt, "e_tag", "etag")
@@ -688,7 +688,7 @@ S3FileSystem = R6Class("S3FileSystem",
       )
       if(nzchar(tmp_dir)) {
         tmp_dir = unname(vapply(tmp_dir, private$.s3_strip_uri, FUN.VALUE = ""))
-        self$s3_cache_bucket = str_split(tmp_dir, "/", 2)[[1]][[1]]
+        self$s3_cache_bucket = str_split(tmp_dir, "/", 2, fixed = T)[[1]][[1]]
       } else if (is.null(self$s3_cache_bucket)) {
         tmp_dir = self$s3_cache_bucket
       }
@@ -1615,7 +1615,7 @@ S3FileSystem = R6Class("S3FileSystem",
         )))
       }
       Key = Filter(Negate(is.na),
-        vapply(unlist(lapply(path, str_split, "/", 2 ), recursive = F),
+        vapply(str_split(path, "/", 2, fixed = T),
           function(p) p[2], FUN.VALUE = ""
         )
       )
@@ -1711,7 +1711,7 @@ S3FileSystem = R6Class("S3FileSystem",
         return(character(0))
 
       Key = Filter(Negate(is.na),
-        vapply(unlist(lapply(path, str_split, "/", 2 ), recursive = F),
+        vapply(str_split(path, "/", 2, fixed = T),
           function(p) p[2], FUN.VALUE = ""
         )
       )
@@ -1922,7 +1922,7 @@ S3FileSystem = R6Class("S3FileSystem",
         "`path` is required to be a character vector" = is.character(path)
       )
       path = unname(vapply(path, private$.s3_strip_uri, FUN.VALUE = ""))
-      parts = str_split(path, "/", 2)
+      parts = str_split(path, "/", 2, fixed = T)
       root = (path == lapply(parts, function(p) p[[1]]))
       dir = dirname(path)
       dir[root] = path[root]
@@ -1938,7 +1938,7 @@ S3FileSystem = R6Class("S3FileSystem",
       )
       pattern = "(?<!^|[.]|/)[.]([^.]+)$"
       pos = regexpr(pattern, path, perl = TRUE)
-      return(ifelse(pos > -1L, substring(path, pos + 1L), ""))
+      return(fifelse(pos > -1L, substring(path, pos + 1L), ""))
     },
 
     #' @description Removes the last extension and return the rest of the s3 uri.
@@ -2153,9 +2153,9 @@ S3FileSystem = R6Class("S3FileSystem",
                 else ""
               ),
               size = c$Size,
-              type = ifelse(endsWith(c$Key, "/"), "directory", "file"),
-              owner = ifelse(
-                identical(c$Owner$DisplayName, character(0)), "", c$Owner$DisplayName
+              type = if (endsWith(c$Key, "/")) "directory" else "file",
+              owner = (
+                if (identical(c$Owner$DisplayName, character(0))) NA_character_ else c$Owner$DisplayName
               ),
               etag = c$ETag,
               last_modified = c$LastModified
@@ -2181,7 +2181,7 @@ S3FileSystem = R6Class("S3FileSystem",
             type = "directory",
             owner = "",
             etag = "",
-            last_modified = as.POSIXct(NA)
+            last_modified = na_posixct()
           )
         })
         s3_ls = rbind(rbindlist(s3_files),rbindlist(s3_dir))
@@ -2577,8 +2577,8 @@ S3FileSystem = R6Class("S3FileSystem",
       if (!grepl("/", path)) {
         return(list(Bucket = path, Key = "", VersionId = NULL))
       } else {
-        parts = str_split(path, "/", n = 2)[[1]]
-        keyparts = str_split(parts[2],  "\\?versionId=")[[1]]
+        parts = str_split(path, "/", n = 2, fixed = T)[[1]]
+        keyparts = str_split(parts[2], "?versionId=", fixed = T)[[1]]
         return(list(
           Bucket = parts[1],
           Key = keyparts[1],

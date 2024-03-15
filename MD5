@@ -1,12 +1,12 @@
-50a9d496784053c1b6e34565f355b626 *DESCRIPTION
+01b668c5fcd21c60eabae628f2aaa008 *DESCRIPTION
 63891d428f69e7bede7af1dca2d9c467 *LICENSE
 dfd88b675aa8fef1ab7f8f581dadfa5f *NAMESPACE
-7800575c108a5e34e1cf8c24581f107d *NEWS.md
+2339674b1f99158edcd46efcac6d0f2f *NEWS.md
 7b0f99d3f918c6f49635ddde5b2f9cc7 *R/file_system.R
 eeb577e3ceb37c7cbe9652272688da33 *R/file_system_async.R
 55059a1e22e0bece0ee5ab0d243aa137 *R/reexport_fs.R
-4aa467938314291ad54db69a0ba34258 *R/s3filesystem_class.R
-8b02a6fc92b01c01576010c777bbbede *R/utils.R
+c7756dbc5435015c94a45b2a0f21d078 *R/s3filesystem_class.R
+335439af4209007f615a2a6a51dc48a1 *R/utils.R
 b53af1979994f1f18776de65b0e61528 *R/zzz.R
 bc57a9bf16b5d27ee1c8ce484dacca7e *README.md
 01d2b1387a47223626e6456cdfeeb731 *man/S3FileSystem.Rd
